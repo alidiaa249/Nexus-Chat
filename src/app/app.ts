@@ -1,12 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthComponent } from './features/auth/auth';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  imports: [RouterOutlet, AuthComponent],
+  template: '<router-outlet />',
 })
-export class App {
-  protected readonly title = signal('websocket-project');
-}
+export class App {}
