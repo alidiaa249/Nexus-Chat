@@ -2,6 +2,9 @@
   "buildCommand": "ng build",
   "outputDirectory": "dist/websocket-project/browser",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/((?!ngsw-worker.js|ngsw.json|manifest.webmanifest|assets|.*\\.js|.*\\.css|.*\\.png|.*\\.ico|.*\\.woff2?).*)",
+      "destination": "/index.html"
+    }
   ]
 }
