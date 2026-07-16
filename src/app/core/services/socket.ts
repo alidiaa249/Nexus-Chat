@@ -14,8 +14,7 @@ interface MessagePayload {
 })
 export class SocketService {
   private socket!: Socket;
-  private readonly SERVER_URL = environment.baseurl; // غيّرها بـ url السيرفر بتاعك
-
+  private readonly SERVER_URL = environment.baseurl; 
   constructor() {
     this.connect();
   }
@@ -23,9 +22,7 @@ export class SocketService {
   // فتح الاتصال
   private connect(): void {
     this.socket = io(this.SERVER_URL, {
-      transports: ['websocket', 'polling', 'flashsocket', 'webtransport'], // لو محتاج تستخدم transport معين
-      // لو محتاج تبعت token للـ auth
-      // auth: { token: 'your_token' }
+
     });
 
     this.socket.on('connect', () => {
@@ -33,18 +30,14 @@ export class SocketService {
     });
 
     this.socket.on('disconnect', (reason: string) => {
-      console.log('❌ Disconnected:', reason);
+    
     });
 
     this.socket.on('connect_error', (err) => {
-      console.error('🔴 Connection error:', err.message);
+      console.error(' Connection error:', err.message);
     });
 
-    this.socket.onAny((eventName, ...args) => {
-      console.log('📩 Event received:', eventName, args);
-    });
   }
-
   // ================= Room Management =================
   joinRoom(roomId: string): void {
     if (this.socket.connected) {
@@ -113,7 +106,6 @@ export class SocketService {
     this.socket.off('isNotTyping');
   }
 
-  // قفل الاتصال يدوي لو محتاج
   disconnect(): void {
     this.socket.disconnect();
   }

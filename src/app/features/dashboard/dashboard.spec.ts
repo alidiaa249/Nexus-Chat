@@ -55,6 +55,10 @@ class SocketServiceStub {
   onIsNotTyping() {
     return of();
   }
+  offReceiveMessage() {}
+  offIsTyping() {}
+  offIsNotTyping() {}
+  disconnect() {}
 }
 
 describe('Dashboard', () => {
