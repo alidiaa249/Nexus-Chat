@@ -22,7 +22,7 @@ export class SocketService {
   // فتح الاتصال
   private connect(): void {
     this.socket = io(this.SERVER_URL, {
-
+     transports: ['websocket', 'polling', 'flashsocket', 'webtransport'],
     });
 
     this.socket.on('connect', () => {
