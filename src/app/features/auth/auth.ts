@@ -6,6 +6,7 @@ import { User } from '../../core/services/user';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../shared/services/toast';
 
 type AuthTab = 'signin' | 'signup';
 
@@ -19,6 +20,7 @@ type AuthTab = 'signin' | 'signup';
 export class AuthComponent {
     private readonly _authserv = inject(Auth);
     private readonly _router = inject(Router);
+    private readonly toastservice = inject(ToastService);
 
   activeTab = signal<AuthTab>('signin');
   showPassword = signal(false);
@@ -80,9 +82,11 @@ export class AuthComponent {
           console.log(res);
          localStorage.setItem("token" , res.accessToken)
          localStorage.setItem("user" , JSON.stringify(res.userId))
+         this.toastservice.show("login successfully" , 'success')
         },
         error: (err: HttpErrorResponse) => {
           console.log(err);
+          this.toastservice.show(err.error.message , 'error')
 
         },
         complete: () => {
@@ -105,12 +109,13 @@ export class AuthComponent {
       this.registersub = this._authserv.signup(this.registerform.value).subscribe({
         next: (res) => {
           console.log(res);
+          this.toastservice.show('Account created successfully', 'success');
+          this.switchTab("signin")
           
-         
 
         },
         error: (err: HttpErrorResponse) => {
-
+     this.toastservice.show(err.message , 'error')
         },
         complete: () => {
           this.registerform.reset();
