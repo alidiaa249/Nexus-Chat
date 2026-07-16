@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, HostListener, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  signal,
+} from '@angular/core';
 import { FormsModule, AbstractControl } from '@angular/forms';
 import { User } from '../../core/services/user';
 import { SocketService } from '../../core/services/socket';
@@ -48,6 +58,7 @@ export class Dashboard implements OnInit, OnDestroy {
   socket = inject(SocketService);
   router = inject(Router);
   auth = inject(Auth);
+  @ViewChild('messagesEnd') private messagesEnd?: ElementRef<HTMLDivElement>;
   messageDraft = '';
   users: any[] = [];
   roomId: string = '';
@@ -66,12 +77,9 @@ export class Dashboard implements OnInit, OnDestroy {
     this.username.set('');
   }
 
-
-
-    ngOnInit(): void {
+  ngOnInit(): void {
     this.getusers();
   }
-
 
   toggleMobileNav(): void {
     this.isMobileNavOpen.update((v) => !v);
@@ -99,15 +107,14 @@ export class Dashboard implements OnInit, OnDestroy {
     }
   }
 
-  selectChat(chat: string, reciverid: string , username: string): void {
+  selectChat(chat: string, reciverid: string, username: string): void {
     this.socket.leaveRoom(this.roomId); // for left the past room
     this.subs.forEach((s) => s.unsubscribe());
-      this.socket.offReceiveMessage();
-  this.socket.offIsTyping();
-  this.socket.offIsNotTyping();
-     this.subs = [];
-// for left the past room
-
+    this.socket.offReceiveMessage();
+    this.socket.offIsTyping();
+    this.socket.offIsNotTyping();
+    this.subs = [];
+    // for left the past room
 
     this.username.set(username);
     this.roomId = chat;
@@ -115,38 +122,25 @@ export class Dashboard implements OnInit, OnDestroy {
     this.isTypingSent = false;
     this.getroommessage(this.roomId);
     this.socket.joinRoom(this.roomId);
-  this.socket.onReceiveMessage((msg) => {
-    console.log(msg);
-    const formattedMsg: message = {
-      _id:  crypto.randomUUID(), 
-      roomId: msg.roomId,
-      content: msg.message,             
-      senderId: msg.senderId,
-      receiverId: this.selectedReceiverId,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      __v: 0,
-    };
-    this.messages.update((current) => [...current, formattedMsg]);
-  });
-
-  console.log('4️⃣ onReceiveMessage listener registered');
-
-    // typing indicators
-  this.socket.onIsTyping(() => {
-    this.isSomeoneTyping.set(true);
-    console.log(this.isSomeoneTyping());
-    
-  });
-
-  this.socket.onIsNotTyping(() => {
-    this.isSomeoneTyping.set(false);
-    console.log(this.isSomeoneTyping());
-  });
+    this.socket.onReceiveMessage((msg) => {
+      console.log(msg);
+      const formattedMsg: message = {
+        _id: crypto.randomUUID(),
+        roomId: msg.roomId,
+        content: msg.message,
+        senderId: msg.senderId,
+        receiverId: this.selectedReceiverId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        __v: 0,
+      };
+      this.messages.update((current) => [...current, formattedMsg]);
+      this.scrollToBottom();
+      console.log(this.isSomeoneTyping());
+    });
   }
 
-
-   refreshToken() {
+  refreshToken() {
     this.auth.refreshToken().subscribe({
       next: (res: any) => {
         console.log(res);
@@ -189,23 +183,19 @@ export class Dashboard implements OnInit, OnDestroy {
     });
   }
 
-
-
-  
   getroommessage(selectedRoomId: string) {
     this.userserve.getmessages(selectedRoomId).subscribe({
       next: (value) => {
         console.log(value);
         this.messages.set(Array.isArray(value?.messages) ? value.messages : []);
-      },error: (err) => {
+        this.scrollToBottom();
+      },
+      error: (err) => {
         if (err.status === 401) {
-          this.refreshToken()
+          this.refreshToken();
           this.getroommessage(selectedRoomId);
-      
-  
-  
-         
-      }}
+        }
+      },
     });
   }
 
@@ -221,13 +211,9 @@ export class Dashboard implements OnInit, OnDestroy {
         } else {
           console.error('Error sending message:', err);
         }
-  
       },
     });
   }
-
-
-
 
   send(): void {
     if (!this.messageDraft.trim()) return;
@@ -237,12 +223,19 @@ export class Dashboard implements OnInit, OnDestroy {
       message: this.messageDraft,
       senderId: this.myuserid,
     });
-    console.log(this.roomId , this.messageDraft , this.myuserid);
-    
+    console.log(this.roomId, this.messageDraft, this.myuserid);
+
     this.sendmessage();
     console.log(this.messages());
     this.messageDraft = '';
     this.onStopTyping();
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      this.messagesEnd?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 0);
   }
 
   onTyping(): void {

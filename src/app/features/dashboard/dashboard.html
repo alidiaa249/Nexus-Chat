@@ -42,7 +42,6 @@
       </div>
 
       <!-- User Profile Summary -->
- 
 
       <!-- SideNavBar CTA -->
       <button
@@ -95,7 +94,7 @@
       @for (user of users; track user._id) {
         <div
           class="flex items-center gap-4 p-3 rounded-xl cursor-pointer border-l-4 transition-all duration-200 mb-3"
-          (click)="selectChat([myuserid , user._id].sort().join() , user._id , user.name)"
+          (click)="selectChat([myuserid, user._id].sort().join(), user._id, user.name)"
         >
           <div class="relative flex-shrink-0">
             <img
@@ -177,16 +176,16 @@
         </button>
         <div class="flex items-center gap-3">
           @if (username()) {
-                            <div
+            <div
               class="w-10 h-10 rounded-full bg-[#4f46e5] text-[#dad7ff] flex items-center justify-center text-[18px] leading-[24px] font-bold"
             >
               {{ username().charAt(0) }}
             </div>
           }
-   
+
           <div>
             <h2 class="text-[18px] leading-[24px] font-semibold text-[var(--color-text)]">
-             {{username()}}
+              {{ username() }}
             </h2>
             <p class="text-[12px] leading-[16px] tracking-[0.01em] font-medium text-[#4ae176]">
               {{ isSomeoneTyping() ? 'Typing' : '' }}
@@ -242,7 +241,7 @@
               <div class="flex flex-col gap-1 max-w-[85%] items-end">
                 <div class="flex items-baseline gap-2 mr-1">
                   <span class="text-xs text-[var(--color-border-strong)]">{{
-                    message.createdAt| date:'shortTime'
+                    message.createdAt | date: 'shortTime'
                   }}</span>
                 </div>
                 <div
@@ -261,7 +260,7 @@
               <div class="flex flex-col gap-1 max-w-[85%]">
                 <div class="flex items-baseline gap-2 ml-1">
                   <span class="text-xs text-[var(--color-border-strong)]">{{
-                    message.createdAt| date:'shortTime'
+                    message.createdAt | date: 'shortTime'
                   }}</span>
                 </div>
                 <div
@@ -274,6 +273,7 @@
           }
         }
 
+        <div #messagesEnd></div>
         <div class="h-4"></div>
       </div>
     } @else {
