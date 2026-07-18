@@ -9,10 +9,10 @@ import { environment } from '../../../environments/environment';
 export class Auth {
   private readonly _http = inject(HttpClient);
   signup(data: any): Observable<any> {
-    return this._http.post(environment.baseurl + '/auth/signup', data, { withCredentials: true });
+    return this._http.post(environment.baseurl + '/auth/signup', data, );
   }
   signin(data: any): Observable<any> {
-    return this._http.post(environment.baseurl + '/auth/login', data, { withCredentials: true });
+    return this._http.post(environment.baseurl + '/auth/login', data, );
   }
   refreshToken(): Observable<any> {
     return this._http.post(

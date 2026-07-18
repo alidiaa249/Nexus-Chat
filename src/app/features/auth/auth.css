@@ -1,5 +1,3 @@
-
-
 @theme {
   /* ===========================
      Colors
@@ -92,14 +90,14 @@
      Fonts
   =========================== */
 
-  --font-display-lg: "Inter", sans-serif;
-  --font-label-md: "Inter", sans-serif;
-  --font-body-lg: "Inter", sans-serif;
-  --font-title-md: "Inter", sans-serif;
-  --font-headline-lg-mobile: "Inter", sans-serif;
-  --font-body-md: "Inter", sans-serif;
-  --font-code-sm: "Inter", monospace;
-  --font-headline-lg: "Inter", sans-serif;
+  --font-display-lg: 'Inter', sans-serif;
+  --font-label-md: 'Inter', sans-serif;
+  --font-body-lg: 'Inter', sans-serif;
+  --font-title-md: 'Inter', sans-serif;
+  --font-headline-lg-mobile: 'Inter', sans-serif;
+  --font-body-md: 'Inter', sans-serif;
+  --font-code-sm: 'Inter', monospace;
+  --font-headline-lg: 'Inter', sans-serif;
 
   /* ===========================
      Font Sizes
@@ -141,9 +139,15 @@
   --text-label-md--letter-spacing: 0.01em;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
-
-
-  
-  
-
+.spinner {
+  animation: spin 1s linear infinite;
+}

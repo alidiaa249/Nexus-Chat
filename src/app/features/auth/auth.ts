@@ -24,6 +24,7 @@ export class AuthComponent {
 
   activeTab = signal<AuthTab>('signin');
   showPassword = signal(false);
+  isLoading = signal(false);
 
   signInModel = { email: '', password: '', remember: false };
   signUpModel = {
@@ -76,18 +77,19 @@ export class AuthComponent {
   onSignIn(): void {
         if (this.loginform.valid) {
       this.login.unsubscribe();
-
+      this.isLoading.set(true);
       this.registersub = this._authserv.signin(this.loginform.value).subscribe({
         next: (res) => {
           console.log(res);
          localStorage.setItem("token" , res.accessToken)
          localStorage.setItem("user" , JSON.stringify(res.userId))
          this.toastservice.show("login successfully" , 'success')
+         this.isLoading.set(false);
         },
         error: (err: HttpErrorResponse) => {
           console.log(err);
           this.toastservice.show(err.error.message , 'error')
-
+          this.isLoading.set(false);
         },
         complete: () => {
           this._router.navigate(['/dash']);
@@ -103,7 +105,7 @@ export class AuthComponent {
 
        if (this.registerform.valid) {
         console.log(this.registerform.value);
-
+        this.isLoading.set(true);
       this.registersub.unsubscribe();
 
       this.registersub = this._authserv.signup(this.registerform.value).subscribe({
@@ -111,11 +113,13 @@ export class AuthComponent {
           console.log(res);
           this.toastservice.show('Account created successfully', 'success');
           this.switchTab("signin")
+          this.isLoading.set(false);
           
 
         },
         error: (err: HttpErrorResponse) => {
      this.toastservice.show(err.message , 'error')
+     this.isLoading.set(false);
         },
         complete: () => {
           this.registerform.reset();
